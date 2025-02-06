@@ -1,0 +1,96 @@
+import dis
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import pytorch3d
+import pytorch3d.io
+from pytorch3d.vis.plotly_vis import plot_scene
+from tqdm.auto import tqdm
+import starter.utils
+import os
+import imageio
+from visualizer.utils import (
+    get_device,
+    get_mesh_renderer,
+    load_cow_mesh,
+    get_points_renderer,
+    unproject_depth_image,
+)
+import argparse
+import torch
+import plotly.io as pio
+from PIL import Image, ImageDraw
+import math
+from visualizer.render_generic import *
+
+
+def DegreeRenders(
+    output_file,
+    cow_path="data/cow.obj",
+    device=None,
+    image_size=256,
+    color=[0.7, 0.7, 1],
+    fps=15,
+    mesh=None,
+    distance=3,
+    has_textures=None,
+    steps=5,
+    elev=0,
+    full_sphere=False,
+):
+    if device is None:
+        device = get_device()
+
+    # Get the renderer.
+    renderer = get_mesh_renderer(image_size=image_size)
+
+    # Get the vertices, faces, and textures.
+    if not mesh:
+        vertices, faces = load_cow_mesh(cow_path)
+        vertices = vertices.unsqueeze(0)  # (N_v, 3) -> (1, N_v, 3)
+        faces = faces.unsqueeze(0)  # (N_f, 3) -> (1, N_f, 3)
+        if not has_textures:
+            textures = torch.ones_like(vertices)  # (1, N_v, 3)
+            textures = textures * torch.tensor(color)  # (1, N_v, 3)
+        else:
+            temp = vertices.squeeze(0)
+            textures = torch.zeros_like(temp)
+            z_min = torch.min(temp[:, 2]).item()
+            z_max = torch.max(temp[:, 2]).item()
+            color1, color2 = has_textures[0], has_textures[1]
+            for i in range(temp.shape[0]):
+                alpha = (temp[i, 2] - z_min) / (z_max - z_min)
+                textures[i] = color1 * alpha + color2 * (1 - alpha)
+            textures = textures.unsqueeze(0)
+        mesh = pytorch3d.structures.Meshes(
+            verts=vertices,
+            faces=faces,
+            textures=pytorch3d.renderer.TexturesVertex(textures),
+        )
+    mesh = mesh.to(device)
+
+    num_views = 360 // steps
+    if full_sphere:
+        R, T = pytorch3d.renderer.look_at_view_transform(
+            dist=distance,
+            elev=np.linspace(-180, 180, num_views, endpoint=False),
+            azim=np.linspace(-180, 180, num_views, endpoint=False),
+        )
+    else:
+        R, T = pytorch3d.renderer.look_at_view_transform(
+            dist=distance,
+            elev=elev,
+            azim=np.linspace(-180, 180, num_views, endpoint=False),
+        )
+    # Prepare the camera:
+    many_cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R, T=T, device=device)
+
+    # Place a point light in front of the cow.
+    lights = pytorch3d.renderer.PointLights(location=[[0, 0, -distance]], device=device)
+
+    rend = renderer(mesh.extend(num_views), cameras=many_cameras, lights=lights)
+    rend = rend.cpu().numpy()[..., :3]
+    rend = (rend * 255).astype(np.uint8)
+    rend = list(rend)
+    duration = 1000 // fps
+    imageio.mimsave(output_file, rend, duration=duration, loop=0)
