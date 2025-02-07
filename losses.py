@@ -7,7 +7,8 @@ def voxel_loss(voxel_src, voxel_tgt):
     # voxel_tgt: b x h x w x d
     # loss = Binary Cross Entropy
     # implement some loss for binary voxel grids
-    loss = torch.nn.functional.binary_cross_entropy(voxel_src, voxel_tgt)
+    assert voxel_src.shape == voxel_tgt.shape
+    loss = torch.nn.functional.cross_entropy(voxel_src, voxel_tgt)
     return loss
 
 
