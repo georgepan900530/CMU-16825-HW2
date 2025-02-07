@@ -94,3 +94,44 @@ def DegreeRenders(
     rend = list(rend)
     duration = 1000 // fps
     imageio.mimsave(output_file, rend, duration=duration, loop=0)
+
+
+def vis_voxel(
+    voxel,
+    output_file,
+    threshold=0.5,
+    image_size=256,
+    distance=3,
+    fps=15,
+    steps=5,
+    elev=0,
+    full_sphere=False,
+    color=[0.7, 0.7, 1],
+):
+    device = get_device()
+
+    # Use cubify to convert a voxel grid to a mesh, threshold is used to determine if the voxel is occupied or not
+    mesh = pytorch3d.ops.cubify(voxel, device=device, threshold=threshold)
+    vertices, faces = mesh.verts_list()[0], mesh.faces_list()[0]
+    vertices = vertices.unsqueeze(0)
+    faces = faces.unsqueeze(0)
+    textures = torch.ones_like(vertices)
+    textures = textures * torch.tensor(color)
+    mesh = pytorch3d.structures.Meshes(
+        verts=vertices,
+        faces=faces,
+        textures=pytorch3d.renderer.TexturesVertex(textures),
+    )
+    mesh = mesh.to(device)
+
+    DegreeRenders(
+        output_file,
+        mesh=mesh,
+        image_size=image_size,
+        distance=distance,
+        fps=fps,
+        steps=steps,
+        elev=elev,
+        full_sphere=full_sphere,
+        color=color,
+    )
