@@ -115,8 +115,8 @@ def vis_voxel(
     vertices, faces = mesh.verts_list()[0], mesh.faces_list()[0]
     vertices = vertices.unsqueeze(0)
     faces = faces.unsqueeze(0)
-    textures = torch.ones_like(vertices)
-    textures = textures * torch.tensor(color)
+    textures = torch.ones_like(vertices, device=device)
+    textures = textures * torch.tensor(color, device=device)
     mesh = pytorch3d.structures.Meshes(
         verts=vertices,
         faces=faces,
