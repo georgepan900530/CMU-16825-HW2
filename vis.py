@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 import starter.utils
 import os
 import imageio
-from visualizer.utils import (
+from starter.utils import (
     get_device,
     get_mesh_renderer,
     load_cow_mesh,
@@ -21,7 +21,7 @@ import torch
 import plotly.io as pio
 from PIL import Image, ImageDraw
 import math
-from visualizer.render_generic import *
+from starter.render_generic import *
 
 
 def DegreeRenders(
