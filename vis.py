@@ -111,7 +111,7 @@ def vis_voxel(
     device = get_device()
 
     # Use cubify to convert a voxel grid to a mesh, threshold is used to determine if the voxel is occupied or not
-    mesh = pytorch3d.ops.cubify(voxel, device=device, threshold=threshold)
+    mesh = pytorch3d.ops.cubify(voxel, device=device, thresh=threshold)
     vertices, faces = mesh.verts_list()[0], mesh.faces_list()[0]
     vertices = vertices.unsqueeze(0)
     faces = faces.unsqueeze(0)
