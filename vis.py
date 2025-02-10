@@ -107,8 +107,10 @@ def vis_voxel(
     elev=0,
     full_sphere=False,
     color=[0.7, 0.7, 1],
+    device=None,
 ):
-    device = get_device()
+    if device is None:
+        device = get_device()
 
     # Use cubify to convert a voxel grid to a mesh, threshold is used to determine if the voxel is occupied or not
     mesh = pytorch3d.ops.cubify(voxel, device=device, thresh=threshold)
@@ -135,3 +137,42 @@ def vis_voxel(
         full_sphere=full_sphere,
         color=color,
     )
+
+
+def vis_point_cloud(
+    pc,
+    output_file,
+    device=None,
+    fps=15,
+    image_size=256,
+    distance=8,
+    background_color=(1, 1, 1),
+    elev=0,
+    steps=20,
+):
+    if device is None:
+        device = get_device()
+
+    renderer = get_points_renderer(
+        image_size=image_size, device=device, background_color=background_color
+    )
+
+    r = torch.tensor([0, 0, np.pi])
+    r = pytorch3d.transforms.euler_angles_to_matrix(r, "XYZ")
+    views = []
+    for i in range(-180, 180, steps):
+        for j in range(-180, 180, steps):
+            R, T = pytorch3d.renderer.look_at_view_transform(
+                dist=distance,
+                elev=j,
+                azim=i,
+            )
+            cameras = pytorch3d.renderer.FoVPerspectiveCameras(
+                R=r @ R, T=T, device=device
+            )
+            rend = renderer(pc, cameras=cameras)
+            rend = rend.cpu().numpy()[0, ..., :3]
+            rend = (rend * 255).astype(np.uint8)
+        views.append(rend)
+    duration = 1000 // fps
+    imageio.mimsave(output_file, views, duration=duration, loop=0)
