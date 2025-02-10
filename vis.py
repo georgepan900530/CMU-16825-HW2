@@ -185,7 +185,7 @@ def vis_mesh(
     output_file,
     image_size=256,
     device=None,
-    distance=3,
+    distance=1.2,
     fps=15,
     steps=5,
     elev=0,
