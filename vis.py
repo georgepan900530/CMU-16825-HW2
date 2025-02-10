@@ -178,3 +178,42 @@ def vis_point_cloud(
         views.append(rend)
     duration = 1000 // fps
     imageio.mimsave(output_file, views, duration=duration, loop=0)
+
+
+def vis_mesh(
+    mesh,
+    output_file,
+    image_size=256,
+    device=None,
+    distance=3,
+    fps=15,
+    steps=5,
+    elev=0,
+    color=[0.7, 0.7, 1],
+):
+    if device is None:
+        device = get_device()
+
+    vertices, faces = mesh.verts_list()[0], mesh.faces_list()[0]
+    vertices = vertices.unsqueeze(0)
+    faces = faces.unsqueeze(0)
+    textures = torch.ones_like(vertices, device=device)
+    textures = textures * torch.tensor(color, device=device)
+    mesh = pytorch3d.structures.Meshes(
+        verts=vertices,
+        faces=faces,
+        textures=pytorch3d.renderer.TexturesVertex(textures),
+    )
+    mesh = mesh.to(device)
+    renderer = get_mesh_renderer(image_size=image_size, device=device)
+
+    DegreeRenders(
+        output_file,
+        mesh=mesh,
+        image_size=image_size,
+        distance=distance,
+        fps=fps,
+        color=color,
+        steps=steps,
+        elev=elev,
+    )

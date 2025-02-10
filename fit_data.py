@@ -172,6 +172,10 @@ def train_model(args):
         # fitting
         fit_mesh(mesh_src, mesh_tgt, args)
 
+        # Visualization
+        vis_mesh(mesh_src, "results/q1-3_src.gif")
+        vis_mesh(mesh_tgt, "results/q1-3_tgt.gif")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Model Fit", parents=[get_args_parser()])
