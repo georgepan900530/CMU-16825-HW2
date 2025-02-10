@@ -146,7 +146,7 @@ def train_model(args):
         # fitting
         fit_voxel(voxels_src, voxels_tgt, args)
         vis_voxel(voxels_src, "results/q1-1_src.gif")
-        vis_voxel(voxels_tgt, "results/q1-2_tgt.gif")
+        vis_voxel(voxels_tgt, "results/q1-1_tgt.gif")
 
     elif args.type == "point":
         # initialization
@@ -158,6 +158,10 @@ def train_model(args):
 
         # fitting
         fit_pointcloud(pointclouds_src, pointclouds_tgt, args)
+
+        # Visualization
+        vis_point_cloud(pointclouds_src, "results/q1-2_src.gif")
+        vis_point_cloud(pointclouds_tgt, "results/q1-2_tgt.gif")
 
     elif args.type == "mesh":
         # initialization
