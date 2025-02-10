@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from pytorch3d.ops.knn import knn_points, knn_gather
+from pytorch3d.loss import mesh_laplacian_smoothing
 
 
 # define losses
@@ -16,7 +17,7 @@ def voxel_loss(voxel_src, voxel_tgt):
 
 def chamfer_loss(point_cloud_src, point_cloud_tgt):
     # point_cloud_src, point_cloud_src: b x n_points x 3
-    # loss_chamfer =
+    # loss_chamfer = mean(min(d(x_i, y_j)) + mean(min(d(y_j, x_i)))
     # implement chamfer loss from scratch
     assert point_cloud_src.shape == point_cloud_tgt.shape
 
@@ -38,4 +39,5 @@ def chamfer_loss(point_cloud_src, point_cloud_tgt):
 def smoothness_loss(mesh_src):
     # loss_laplacian =
     # implement laplacian smoothening loss
+    loss_laplacian = mesh_laplacian_smoothing(mesh_src)
     return loss_laplacian
