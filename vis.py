@@ -145,13 +145,20 @@ def vis_point_cloud(
     device=None,
     fps=15,
     image_size=256,
-    distance=8,
+    distance=3,
     background_color=(1, 1, 1),
     elev=0,
     steps=20,
 ):
     if device is None:
         device = get_device()
+
+    pc = pc.detach()[0]
+    color = (pc - pc.min()) / (pc.max() - pc.min())
+    pc = pc.unsqueeze(0)
+    color = color.unsqueeze(0)
+    pc = pytorch3d.structures.Pointclouds(points=pc, features=color)
+    pc = pc.to(device)
 
     renderer = get_points_renderer(
         image_size=image_size, device=device, background_color=background_color
