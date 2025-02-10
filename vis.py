@@ -89,7 +89,7 @@ def DegreeRenders(
     lights = pytorch3d.renderer.PointLights(location=[[0, 0, -distance]], device=device)
 
     rend = renderer(mesh.extend(num_views), cameras=many_cameras, lights=lights)
-    rend = rend.cpu().numpy()[..., :3]
+    rend = rend.detach().cpu().numpy()[..., :3]
     rend = (rend * 255).astype(np.uint8)
     rend = list(rend)
     duration = 1000 // fps
