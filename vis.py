@@ -145,7 +145,7 @@ def vis_point_cloud(
     device=None,
     fps=15,
     image_size=256,
-    distance=3,
+    distance=1.2,
     background_color=(1, 1, 1),
     elev=0,
     steps=20,
