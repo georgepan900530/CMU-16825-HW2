@@ -157,22 +157,17 @@ def vis_point_cloud(
         image_size=image_size, device=device, background_color=background_color
     )
 
-    r = torch.tensor([0, 0, np.pi])
-    r = pytorch3d.transforms.euler_angles_to_matrix(r, "XYZ")
     views = []
     for i in range(-180, 180, steps):
-        for j in range(-180, 180, steps):
-            R, T = pytorch3d.renderer.look_at_view_transform(
-                dist=distance,
-                elev=j,
-                azim=i,
-            )
-            cameras = pytorch3d.renderer.FoVPerspectiveCameras(
-                R=r @ R, T=T, device=device
-            )
-            rend = renderer(pc, cameras=cameras)
-            rend = rend.cpu().numpy()[0, ..., :3]
-            rend = (rend * 255).astype(np.uint8)
+        R, T = pytorch3d.renderer.look_at_view_transform(
+            dist=distance,
+            elev=elev,
+            azim=i,
+        )
+        cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R, T=T, device=device)
+        rend = renderer(pc, cameras=cameras)
+        rend = rend.cpu().numpy()[0, ..., :3]
+        rend = (rend * 255).astype(np.uint8)
         views.append(rend)
     duration = 1000 // fps
     imageio.mimsave(output_file, views, duration=duration, loop=0)
