@@ -56,6 +56,48 @@ class VoxelDecoder(nn.Module):
         return x
 
 
+class PointDecoder(nn.Module):
+    """
+    Decoder for point cloud prediction.
+
+    Parameters:
+    -----
+        in_dim: int, input dimension of the encoder (512 in our case)
+
+    Returns
+    -----
+        out: 3D point cloud with shape (B, N, 3) where N is the number of points
+
+    Reference: Point Set Generation Network (https://arxiv.org/pdf/1703.09411)
+    """
+
+    def __init__(self, in_dim=512, num_points=1000):
+        super(PointDecoder, self).__init__()
+        self.num_points = num_points
+        self.decoder = nn.Sequential(
+            nn.Linear(in_dim, 1024),
+            nn.LeakyReLU(),
+            nn.Linear(1024, 512),
+            nn.LeakyReLU(),
+            nn.Linear(512, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, num_points * 3),
+            nn.Tanh(),
+        )
+
+    def forward(self, x):
+        x = self.decoder(x)
+        return x.view(-1, self.num_points, 3)
+
+
+class MeshDecoder(nn.Module):
+    def __init__(self):
+        super(MeshDecoder, self).__init__()
+
+    def forward(self, x):
+        pass
+
+
 class SingleViewto3D(nn.Module):
     def __init__(self, args):
         super(SingleViewto3D, self).__init__()
