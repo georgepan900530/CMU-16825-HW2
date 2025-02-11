@@ -20,7 +20,7 @@ from vis import *
 def get_args_parser():
     parser = argparse.ArgumentParser("Singleto3D", add_help=False)
     parser.add_argument("--arch", default="resnet18", type=str)
-    parser.add_argument("--vis_freq", default=1000, type=int)
+    parser.add_argument("--vis_freq", default=20, type=int)
     parser.add_argument("--batch_size", default=1, type=int)
     parser.add_argument("--num_workers", default=0, type=int)
     parser.add_argument(
@@ -112,6 +112,8 @@ def evaluate(predictions, mesh_gt, thresholds, args):
         vertices_src = torch.tensor(vertices_src).float()
         faces_src = torch.tensor(faces_src.astype(int))
         mesh_src = pytorch3d.structures.Meshes([vertices_src], [faces_src])
+        if mesh_src.isempty():
+            return False
         pred_points = sample_points_from_meshes(mesh_src, args.n_points)
         pred_points = utils_vox.Mem2Ref(pred_points, H, W, D)
         # Apply a rotation transform to align predicted voxels to gt mesh
@@ -169,7 +171,7 @@ def evaluate_model(args):
     avg_r_score = []
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"checkpoints/q2_1/checkpoint_{args.type}.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         print(f"Succesfully loaded iter {start_iter}")
 
@@ -188,7 +190,12 @@ def evaluate_model(args):
 
         predictions = model(images_gt, args)
 
+        if args.type == "vox":
+            predictions = predictions.permute(0, 1, 4, 3, 2)
+
         metrics = evaluate(predictions, mesh_gt, thresholds, args)
+        if not metrics:
+            continue
 
         # TODO:
         # if (step % args.vis_freq) == 0:
@@ -201,20 +208,20 @@ def evaluate_model(args):
                 # Need to visualize 3 examples, including their imput RGB images, predicted voxels, , ground truth voxels, and ground truth meshes
                 # Visualize RGB image
                 rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
-                plt.imsave(f"results/q2_vox_rgb_{step}.png", rend)
+                plt.imsave(f"results/q2/vox/q2_vox_rgb_{step}.png", rend)
 
                 # Visualize predicted voxels
                 voxels_pred = predictions[0]
-                vis_voxel(voxels_pred, f"results/q2_vox_pred_{step}.gif")
+                vis_voxel(voxels_pred, f"results/q2/vox/q2_vox_pred_{step}.gif")
 
                 # Visualize ground truth voxels
                 voxels_gt = feed_dict["voxels"].to(args.device)
                 voxels_gt = voxels_gt[0]
-                vis_voxel(voxels_gt, f"results/q2_vox_gt_{step}.gif")
+                vis_voxel(voxels_gt, f"results/q2/vox/q2_vox_gt_{step}.gif")
 
                 # Visualize ground truth mesh
                 mesh_gt = mesh_gt[0]
-                vis_mesh(mesh_gt, f"results/q2_mesh_gt_{step}.gif")
+                vis_mesh(mesh_gt, f"results/q2/vox/q2_mesh_gt_{step}.gif")
 
         total_time = time.time() - start_time
         iter_time = time.time() - iter_start_time

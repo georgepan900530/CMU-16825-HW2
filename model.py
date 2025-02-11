@@ -44,7 +44,6 @@ class VoxelDecoder(nn.Module):
             nn.BatchNorm3d(16),
             nn.ReLU(),
             nn.ConvTranspose3d(16, 1, kernel_size=1),
-            nn.Sigmoid(),
         )
 
     def forward(self, x):

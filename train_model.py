@@ -8,6 +8,10 @@ from model import SingleViewto3D
 from pytorch3d.datasets.r2n2.utils import collate_batched_R2N2
 from pytorch3d.ops import sample_points_from_meshes
 from r2n2_custom import R2N2
+from vis import *
+import math
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 def get_args_parser():
@@ -15,16 +19,16 @@ def get_args_parser():
     # Model parameters
     parser.add_argument("--arch", default="resnet18", type=str)
     parser.add_argument("--lr", default=4e-4, type=float)
-    parser.add_argument("--max_iter", default=100000, type=int)
-    parser.add_argument("--batch_size", default=32, type=int)
+    parser.add_argument("--max_iter", default=500, type=int)
+    parser.add_argument("--batch_size", default=64, type=int)
     parser.add_argument("--num_workers", default=4, type=int)
     parser.add_argument(
         "--type", default="vox", choices=["vox", "point", "mesh"], type=str
     )
-    parser.add_argument("--n_points", default=1000, type=int)
+    parser.add_argument("--n_points", default=2000, type=int)
     parser.add_argument("--w_chamfer", default=1.0, type=float)
     parser.add_argument("--w_smooth", default=0.1, type=float)
-    parser.add_argument("--save_freq", default=2000, type=int)
+    parser.add_argument("--save_freq", default=200, type=int)
     parser.add_argument("--load_checkpoint", action="store_true")
     parser.add_argument("--device", default="cuda", type=str)
     parser.add_argument("--load_feat", action="store_true")
@@ -96,7 +100,7 @@ def train_model(args):
     start_time = time.time()
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"./checkpoints/q2_1/checkpoint_{args.type}.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_iter = checkpoint["step"]
@@ -137,7 +141,7 @@ def train_model(args):
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                 },
-                f"checkpoint_{args.type}.pth",
+                f"./checkpoints/q2_1/checkpoint_{args.type}.pth",
             )
 
         print(
