@@ -91,11 +91,35 @@ class PointDecoder(nn.Module):
 
 
 class MeshDecoder(nn.Module):
-    def __init__(self):
+    """
+    Decoder for mesh prediction.
+
+    Parameters:
+    -----
+        init_shape: pytorch3d.structures.Meshes, initial shape of the mesh
+        in_dim: int, input dimension of the encoder (512 in our case)
+
+    Returns
+    -----
+        out: b x mesh_pred.verts_packed().shape[0] x 3
+
+    """
+    def __init__(self, mesh_shape, in_dim=512):
         super(MeshDecoder, self).__init__()
+        self.mesh_shape = mesh_shape
+        self.decoder = nn.Sequential(
+            nn.Linear(in_dim, 2048),
+            nn.LeakyReLU(),
+            nn.Linear(2048, 1024),
+            nn.LeakyReLU(),
+            nn.Linear(1024, 512),
+            nn.LeakyReLU(),
+            nn.Linear(512, mesh_shape * 3),
+        )
 
     def forward(self, x):
-        pass
+        x = self.decoder(x)
+        return x.view(-1, self.mesh_shape * 3)
 
 
 class SingleViewto3D(nn.Module):
@@ -131,7 +155,8 @@ class SingleViewto3D(nn.Module):
                 mesh_pred.faces_list() * args.batch_size,
             )
             # TODO:
-            # self.decoder =
+            mesh_shape = mesh_pred.verts_packed().shape[0]
+            self.decoder = MeshDecoder(mesh_shape, in_dim=512).to(self.device)
 
     def forward(self, images, args):
         results = dict()
@@ -162,8 +187,7 @@ class SingleViewto3D(nn.Module):
 
         elif args.type == "mesh":
             # TODO:
-            # deform_vertices_pred =
-            mesh_pred = self.mesh_pred.offset_verts(
-                deform_vertices_pred.reshape([-1, 3])
-            )
+            deform_vertices_pred = self.decoder(encoded_feat)
+            deform_vertices_pred = deform_vertices_pred.reshape([-1, 3])
+            mesh_pred = self.mesh_pred.offset_verts(deform_vertices_pred)
             return mesh_pred

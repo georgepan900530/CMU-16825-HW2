@@ -100,7 +100,7 @@ def train_model(args):
     start_time = time.time()
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"./checkpoints/q2_2/checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"./checkpoints/q2_3/checkpoint_{args.type}.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_iter = checkpoint["step"]
@@ -141,7 +141,7 @@ def train_model(args):
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                 },
-                f"./checkpoints/q2_2/checkpoint_{args.type}.pth",
+                f"./checkpoints/q2_3/checkpoint_{args.type}.pth",
             )
 
         print(

@@ -204,22 +204,21 @@ def evaluate_model(args):
             if args.type == "vox":
                 # Need to visualize 3 examples, including their imput RGB images, predicted voxels, , ground truth voxels, and ground truth meshes
                 # Visualize RGB image
-                if f1_05 > 20:
-                    rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
-                    plt.imsave(f"results/q2/vox/q2_vox_rgb_{step}.png", rend)
+                rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                plt.imsave(f"results/q2/vox/q2_vox_rgb_{step}.png", rend)
 
-                    # Visualize predicted voxels
-                    voxels_pred = predictions[0]
-                    vis_voxel(voxels_pred, f"results/q2/vox/q2_vox_pred_{step}.gif")
+                # Visualize predicted voxels
+                voxels_pred = predictions[0]
+                vis_voxel(voxels_pred, f"results/q2/vox/q2_vox_pred_{step}.gif")
 
-                    # Visualize ground truth voxels
-                    voxels_gt = feed_dict["voxels"].to(args.device)
-                    voxels_gt = voxels_gt[0]
-                    vis_voxel(voxels_gt, f"results/q2/vox/q2_vox_gt_{step}.gif")
+                # Visualize ground truth voxels
+                voxels_gt = feed_dict["voxels"].to(args.device)
+                voxels_gt = voxels_gt[0]
+                vis_voxel(voxels_gt, f"results/q2/vox/q2_vox_gt_{step}.gif")
 
-                    # Visualize ground truth mesh
-                    mesh_gt = mesh_gt[0]
-                    vis_mesh(mesh_gt, f"results/q2/vox/q2_mesh_gt_{step}.gif")
+                # Visualize ground truth mesh
+                mesh_gt = mesh_gt[0]
+                vis_mesh(mesh_gt, f"results/q2/vox/q2_mesh_gt_{step}.gif")
 
             elif args.type == "point":
                 rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
@@ -233,6 +232,14 @@ def evaluate_model(args):
                 )
                 mesh_gt = mesh_gt[0]
                 vis_mesh(mesh_gt, f"results/q2/point_1000/q2_mesh_gt_{step}.gif")
+                
+            elif args.type == "mesh":
+                rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                plt.imsave(f"results/q2/mesh/q2_mesh_rgb_{step}.png", rend)
+                mesh_pred = predictions[0]
+                vis_mesh(mesh_pred, f"results/q2/mesh/q2_mesh_pred_{step}.gif")
+                mesh_gt = mesh_gt[0]
+                vis_mesh(mesh_gt, f"results/q2/mesh/q2_mesh_gt_{step}.gif")
 
         total_time = time.time() - start_time
         iter_time = time.time() - iter_start_time
