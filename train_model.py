@@ -19,7 +19,7 @@ def get_args_parser():
     # Model parameters
     parser.add_argument("--arch", default="resnet18", type=str)
     parser.add_argument("--lr", default=4e-4, type=float)
-    parser.add_argument("--max_iter", default=500, type=int)
+    parser.add_argument("--max_iter", default=300, type=int)
     parser.add_argument("--batch_size", default=64, type=int)
     parser.add_argument("--num_workers", default=4, type=int)
     parser.add_argument(
@@ -100,7 +100,7 @@ def train_model(args):
     start_time = time.time()
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"./checkpoints/q2_3/checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"./checkpoints/q2_1/checkpoint_{args.type}.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_iter = checkpoint["step"]
@@ -141,7 +141,7 @@ def train_model(args):
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                 },
-                f"./checkpoints/q2_3/checkpoint_{args.type}.pth",
+                f"./checkpoints/q2_1/checkpoint_{args.type}.pth",
             )
 
         print(

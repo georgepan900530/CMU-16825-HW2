@@ -28,30 +28,30 @@ class VoxelDecoder(nn.Module):
         self.in_dim = in_dim
 
         # Project the input to higher dimension
-        self.fc1 = nn.Linear(in_dim, 2048)
+        self.fc1 = nn.Linear(in_dim, 16384)
 
         # Transpose concolution for spatial decoding
         # Note that the output shape of a single convTranspose3d is (D_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + output_padding + 1
         self.upsample = nn.Sequential(
-            nn.ConvTranspose3d(256, 128, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose3d(2048, 512, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm3d(512),
+            nn.ReLU(),
+            nn.ConvTranspose3d(512, 128, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm3d(128),
             nn.ReLU(),
-            nn.ConvTranspose3d(128, 64, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm3d(64),
-            nn.ReLU(),
-            nn.ConvTranspose3d(64, 32, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose3d(128, 32, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm3d(32),
             nn.ReLU(),
-            nn.ConvTranspose3d(32, 16, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm3d(16),
+            nn.ConvTranspose3d(32, 8, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm3d(8),
             nn.ReLU(),
-            nn.ConvTranspose3d(16, 1, kernel_size=1),
+            nn.ConvTranspose3d(8, 1, kernel_size=1),
         )
 
     def forward(self, x):
         x = self.fc1(x)
         # resize into a 5D tensor with shape (B, C, D, H, W)
-        x = x.view(x.shape[0], 256, 2, 2, 2)
+        x = x.view(x.shape[0], 2048, 2, 2, 2)
         x = self.upsample(x)  # shape: b x 1 x 32 x 32 x 32
         return x
 

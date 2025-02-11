@@ -34,3 +34,19 @@ In this part, we defined an additional smoothness loss by minimizing the Laplaci
 ![q1-3-gt](results/q1/q1-3_tgt.gif)
 
 Similarly, the smootheness loss allowed the source mesh to fit the ground truth mesh much smoother and better.
+
+## Q2 Reconstructing 3D from single view
+
+### Q2.1 Image to voxel grid
+In this part, we need to construct a deep learning model to predict the occupancy of voxel grid. Specifically, I built my model based on [Pix2Vox](https://github.com/hzxie/Pix2Vox/blob/master/models/decoder.py). Below are the visualizations of the input image, predicted voxel grid, ground truth voxel grid, and ground truth mesh.
+
+#### Samples
+
+| **Description** | **Sample 0** | **Sample20** | **Sample 40** |
+| -------------- | ------------------------ | ------------------------ | ------------------------ |
+| **Input RGB** | ![q2-1-img](results/q2/vox_small/q2_vox_rgb_0.png) | ![q2-1-img2](results/q2/vox_small/q2_vox_rgb_20.png) | ![q2-1-img3](results/q2/vox_small/q2_vox_rgb_40.png) |
+| **Voxel grid prediction** | ![q2-1-pred](results/q2/vox_small/q2_vox_pred_0.gif) | ![q2-1-pred2](results/q2/vox_small/q2_vox_pred_20.gif) | ![q2-1-pred3](results/q2/vox_small/q2_vox_pred_40.gif) |
+| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_small/q2_vox_gt_0.gif)         | ![q2-1-gt2](results/q2/vox_small/q2_vox_gt_20.gif) | ![q2-1-gt3](results/q2/vox_small/q2_vox_gt_40.gif) |
+| **Mesh ground truth** | ![q2-1-gt-mesh](results/q2/vox_small/q2_mesh_gt_0.gif)       | ![q2-1-gt-mesh2](results/q2/vox_small/q2_mesh_gt_20.gif) | ![q2-1-gt-mesh3](results/q2/vox_small/q2_mesh_gt_40.gif) |
+
+As we can see from the above table, the predictions of voxel grids are not as well as expected. This can also be indentify when observing the training loss (Binar Cross-Entropy Loss) which stucked at around **0.1**. I have tried smaller and larger model. However, the performance of each model are similar.
