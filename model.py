@@ -19,6 +19,8 @@ class VoxelDecoder(nn.Module):
     -----
         out: 3D voxel grid with shape (B, D, H, W)
         shape: b x 32 x 32 x 32
+
+    Reference: Pix2Vox (https://github.com/hzxie/Pix2Vox/blob/master/models/decoder.py)
     """
 
     def __init__(self, in_dim=512):
