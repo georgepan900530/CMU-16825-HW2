@@ -2,3 +2,8 @@
 __pycache__
 __pycache__/*
 test.py
+r2n2_shapenet_dataset/
+.vscode/
+checkpoints/
+dataset_location.py
+*.pth
