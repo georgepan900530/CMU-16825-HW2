@@ -38,15 +38,31 @@ Similarly, the smootheness loss allowed the source mesh to fit the ground truth 
 ## Q2 Reconstructing 3D from single view
 
 ### Q2.1 Image to voxel grid
-In this part, we need to construct a deep learning model to predict the occupancy of voxel grid. Specifically, I built my model based on [Pix2Vox](https://github.com/hzxie/Pix2Vox/blob/master/models/decoder.py). Below are the visualizations of the input image, predicted voxel grid, ground truth voxel grid, and ground truth mesh.
+In this part, we need to construct a deep learning model to predict the occupancy of voxel grid. Specifically, I built my model based on [Pix2Vox](https://github.com/hzxie/Pix2Vox/blob/master/models/decoder.py). Below are the visualizations of the input image, predicted voxel grid, ground truth voxel grid, and the ground truth mesh.
 
-#### Samples
+#### Visualizations
 
-| **Description** | **Sample 0** | **Sample20** | **Sample 40** |
+| **Description** | **Sample 0** | **Sample202** | **Sample 638** |
 | -------------- | ------------------------ | ------------------------ | ------------------------ |
-| **Input RGB** | ![q2-1-img](results/q2/vox_small/q2_vox_rgb_0.png) | ![q2-1-img2](results/q2/vox_small/q2_vox_rgb_20.png) | ![q2-1-img3](results/q2/vox_small/q2_vox_rgb_40.png) |
-| **Voxel grid prediction** | ![q2-1-pred](results/q2/vox_small/q2_vox_pred_0.gif) | ![q2-1-pred2](results/q2/vox_small/q2_vox_pred_20.gif) | ![q2-1-pred3](results/q2/vox_small/q2_vox_pred_40.gif) |
-| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_small/q2_vox_gt_0.gif)         | ![q2-1-gt2](results/q2/vox_small/q2_vox_gt_20.gif) | ![q2-1-gt3](results/q2/vox_small/q2_vox_gt_40.gif) |
-| **Mesh ground truth** | ![q2-1-gt-mesh](results/q2/vox_small/q2_mesh_gt_0.gif)       | ![q2-1-gt-mesh2](results/q2/vox_small/q2_mesh_gt_20.gif) | ![q2-1-gt-mesh3](results/q2/vox_small/q2_mesh_gt_40.gif) |
+| **Input RGB** | ![q2-1-img](results/q2/vox_large/q2_vox_rgb_0.png) | ![q2-1-img2](results/q2/vox_large/q2_vox_rgb_202.png) | ![q2-1-img3](results/q2/vox_large/q2_vox_rgb_638.png) |
+| **Voxel grid prediction** | ![q2-1-pred](results/q2/vox_large/q2_vox_pred_0.gif) | ![q2-1-pred2](results/q2/vox_large/q2_vox_pred_202.gif) | ![q2-1-pred3](results/q2/vox_large/q2_vox_pred_638.gif) |
+| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_large/q2_vox_gt_0.gif) | ![q2-1-gt2](results/q2/vox_large/q2_vox_gt_202.gif) | ![q2-1-gt3](results/q2/vox_large/q2_vox_gt_638.gif) |
+| **Mesh ground truth** | ![q2-1-gt-mesh](results/q2/vox_large/q2_mesh_gt_0.gif) | ![q2-1-gt-mesh2](results/q2/vox_large/q2_mesh_gt_202.gif) | ![q2-1-gt-mesh3](results/q2/vox_large/q2_mesh_gt_638.gif) |
 
 As we can see from the above table, the predictions of voxel grids are not as well as expected. This can also be indentify when observing the training loss (Binar Cross-Entropy Loss) which stucked at around **0.1**. I have tried smaller and larger model. However, the performance of each model are similar.
+
+### Q2.2 Image to point cloud
+In this section, we aim to train a model to predict the coordinates of a point cloud. Note that I have tested with different number of points since the point cloud will be extremely sparse if using insuffiecient points. Detail comparison will be shown in the following section. The following shows the visualizations (10000 points) of the input image, predicted point cloud, ground truth point cloud, and the ground truth mesh.
+
+#### Visualizations
+
+| **Description** | **Sample 0** | **Sample 150** | **Sample 450** |
+| -------------- | ------------------------ | ------------------------ | ------------------------ |
+| **Input RGB** | ![q2-2-img](results/q2/point_10000/q2_point_rgb_0.png) | ![q2-2-img2](results/q2/point_10000/q2_point_rgb_150.png) | ![q2-2-img3](results/q2/point_10000/q2_point_rgb_450.png) |
+| **Point cloud prediction** | ![q2-2-pred](results/q2/point_10000/q2_point_pred_0.gif) | ![q2-2-pred2](results/q2/point_10000/q2_point_pred_150.gif) | ![q2-2-pred3](results/q2/point_10000/q2_point_pred_450.gif) |
+| **Point cloud ground truth** | ![q2-2-gt](results/q2/point_10000/q2_point_gt_0.gif) | ![q2-2-gt2](results/q2/point_10000/q2_point_gt_150.gif) | ![q2-2-gt3](results/q2/point_10000/q2_point_gt_450.gif) |
+| **Mesh ground truth** | ![q2-2-gt-mesh](results/q2/point_10000/q2_mesh_gt_0.gif) | ![q2-2-gt-mesh2](results/q2/point_10000/q2_mesh_gt_150.gif) | ![q2-1-gt-mesh3](results/q2/point_10000/q2_mesh_gt_450.gif) |
+
+In my opinion, the point cloud reconstruction performed better than that of voxel as we can see a more aligned shapes between the prediction and the ground truth. However, the point clouds are still fairly sparse compared to the ground truth. Therefore, it is reasonable to test different number of points when training point clouds.
+
+### Q2.3 Image to Mesh

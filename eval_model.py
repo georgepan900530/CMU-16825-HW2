@@ -171,7 +171,7 @@ def evaluate_model(args):
     avg_r_score = []
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"checkpoints/q2_1/checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"checkpoints/q2_2/checkpoint_{args.type}_10000.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         print(f"Succesfully loaded iter {start_iter}")
 
@@ -204,34 +204,35 @@ def evaluate_model(args):
             if args.type == "vox":
                 # Need to visualize 3 examples, including their imput RGB images, predicted voxels, , ground truth voxels, and ground truth meshes
                 # Visualize RGB image
-                rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
-                plt.imsave(f"results/q2/vox_large/q2_vox_rgb_{step}.png", rend)
+                if f1_05 > 50:
+                    rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                    plt.imsave(f"results/q2/vox_large/q2_vox_rgb_{step}.png", rend)
 
-                # Visualize predicted voxels
-                voxels_pred = predictions[0]
-                vis_voxel(voxels_pred, f"results/q2/vox_large/q2_vox_pred_{step}.gif")
+                    # Visualize predicted voxels
+                    voxels_pred = predictions[0]
+                    vis_voxel(voxels_pred, f"results/q2/vox_large/q2_vox_pred_{step}.gif")
 
-                # Visualize ground truth voxels
-                voxels_gt = feed_dict["voxels"].to(args.device)
-                voxels_gt = voxels_gt[0]
-                vis_voxel(voxels_gt, f"results/q2/vox_large/q2_vox_gt_{step}.gif")
+                    # Visualize ground truth voxels
+                    voxels_gt = feed_dict["voxels"].to(args.device)
+                    voxels_gt = voxels_gt[0]
+                    vis_voxel(voxels_gt, f"results/q2/vox_large/q2_vox_gt_{step}.gif")
 
-                # Visualize ground truth mesh
-                mesh_gt = mesh_gt[0]
-                vis_mesh(mesh_gt, f"results/q2/vox_large/q2_mesh_gt_{step}.gif")
+                    # Visualize ground truth mesh
+                    mesh_gt = mesh_gt[0]
+                    vis_mesh(mesh_gt, f"results/q2/vox_large/q2_mesh_gt_{step}.gif")
 
             elif args.type == "point":
                 rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
-                plt.imsave(f"results/q2/point_1000/q2_point_rgb_{step}.png", rend)
+                plt.imsave(f"results/q2/point_10000/q2_point_rgb_{step}.png", rend)
                 pointclouds_gt = sample_points_from_meshes(mesh_gt, args.n_points).cpu()
                 vis_point_cloud(
-                    pointclouds_gt, f"results/q2/point_1000/q2_point_gt_{step}.gif"
+                    pointclouds_gt, f"results/q2/point_10000/q2_point_gt_{step}.gif"
                 )
                 vis_point_cloud(
-                    predictions, f"results/q2/point_1000/q2_point_pred_{step}.gif"
+                    predictions, f"results/q2/point_10000/q2_point_pred_{step}.gif"
                 )
                 mesh_gt = mesh_gt[0]
-                vis_mesh(mesh_gt, f"results/q2/point_1000/q2_mesh_gt_{step}.gif")
+                vis_mesh(mesh_gt, f"results/q2/point_10000/q2_mesh_gt_{step}.gif")
                 
             elif args.type == "mesh":
                 rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
