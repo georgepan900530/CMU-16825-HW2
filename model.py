@@ -43,7 +43,7 @@ class VoxelDecoder(nn.Module):
             nn.ConvTranspose3d(32, 16, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm3d(16),
             nn.ReLU(),
-            nn.ConvTranspose3d(16, 1, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose3d(16, 1, kernel_size=1),
             nn.Sigmoid(),
         )
 
@@ -108,7 +108,7 @@ class SingleViewto3D(nn.Module):
         # call decoder
         if args.type == "vox":
             # TODO:
-            # voxels_pred =
+            voxels_pred = self.decoder(encoded_feat)
             return voxels_pred
 
         elif args.type == "point":
