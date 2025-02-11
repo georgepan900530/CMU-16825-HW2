@@ -20,7 +20,7 @@ from vis import *
 def get_args_parser():
     parser = argparse.ArgumentParser("Singleto3D", add_help=False)
     parser.add_argument("--arch", default="resnet18", type=str)
-    parser.add_argument("--vis_freq", default=20, type=int)
+    parser.add_argument("--vis_freq", default=50, type=int)
     parser.add_argument("--batch_size", default=1, type=int)
     parser.add_argument("--num_workers", default=0, type=int)
     parser.add_argument(
@@ -198,30 +198,27 @@ def evaluate_model(args):
             continue
 
         # TODO:
-        # if (step % args.vis_freq) == 0:
-        #     # visualization block
-        #     #  rend =
-        #     plt.imsave(f'vis/{step}_{args.type}.png', rend)
         if (step % args.vis_freq) == 0:
             if args.type == "vox":
-                # f1_01 = metrics["F1@0.010000"].float()
+                f1_05 = metrics["F1@0.050000"].float()
                 # Need to visualize 3 examples, including their imput RGB images, predicted voxels, , ground truth voxels, and ground truth meshes
                 # Visualize RGB image
-                rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
-                plt.imsave(f"results/q2/vox/q2_vox_rgb_{step}.png", rend)
+                if f1_05 > 20:
+                    rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                    plt.imsave(f"results/q2/vox/q2_vox_rgb_{step}.png", rend)
 
-                # Visualize predicted voxels
-                voxels_pred = predictions[0]
-                vis_voxel(voxels_pred, f"results/q2/vox/q2_vox_pred_{step}.gif")
+                    # Visualize predicted voxels
+                    voxels_pred = predictions[0]
+                    vis_voxel(voxels_pred, f"results/q2/vox/q2_vox_pred_{step}.gif")
 
-                # Visualize ground truth voxels
-                voxels_gt = feed_dict["voxels"].to(args.device)
-                voxels_gt = voxels_gt[0]
-                vis_voxel(voxels_gt, f"results/q2/vox/q2_vox_gt_{step}.gif")
+                    # Visualize ground truth voxels
+                    voxels_gt = feed_dict["voxels"].to(args.device)
+                    voxels_gt = voxels_gt[0]
+                    vis_voxel(voxels_gt, f"results/q2/vox/q2_vox_gt_{step}.gif")
 
-                # Visualize ground truth mesh
-                mesh_gt = mesh_gt[0]
-                vis_mesh(mesh_gt, f"results/q2/vox/q2_mesh_gt_{step}.gif")
+                    # Visualize ground truth mesh
+                    mesh_gt = mesh_gt[0]
+                    vis_mesh(mesh_gt, f"results/q2/vox/q2_mesh_gt_{step}.gif")
 
         total_time = time.time() - start_time
         iter_time = time.time() - iter_start_time
