@@ -7,3 +7,4 @@ r2n2_shapenet_dataset/
 checkpoints/
 dataset_location.py
 *.pth
+results/
