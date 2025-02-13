@@ -68,6 +68,8 @@ In my opinion, the point cloud reconstruction performed better than that of voxe
 ### Q2.3 Image to Mesh
 In this section, we aimed to reconstruct 3D meshes from a single image. The following shows the visualizations of the input image, predicted meshe, and the ground truth mesh.
 
+#### Visualizations
+
 | **Description** | **Sample 0** | **Sample 150** | **Sample 450** |
 | -------------- | ------------------------ | ------------------------ | ------------------------ |
 | **Input RGB** | ![q2-3-img](results/q2/mesh/q2_mesh_rgb_0.png) | ![q2-3-img2](results/q2/mesh/q2_mesh_rgb_150.png) | ![q2-3-img3](results/q2/mesh/q2_mesh_rgb_450.png) |
@@ -75,3 +77,30 @@ In this section, we aimed to reconstruct 3D meshes from a single image. The foll
 | **Mesh ground truth** | ![q2-3-gt-mesh](results/q2/mesh/q2_mesh_gt_0.gif) | ![q2-3-gt-mesh2](results/q2/mesh/q2_mesh_gt_150.gif) | ![q2-1-gt-mesh3](results/q2/mesh/q2_mesh_gt_450.gif) |
 
 As we can see, the performance of the mesh reconstruction is quite poor where the reconstruction shows different meshes collapsing together. This indicates that reconstruction from a single view might be challenging to the model.
+
+### Q2.4 Quantitative comparisons
+For quantitative comaprison, we can the following three curves of F1 score of voxel, point cloud and mesh. Note that I used the 10000 points curve for the point cloud.
+
+![f1-vox](results/q2/vox_large/eval_vox.png) ![f1-point](results/q2/point_10000/eval_point.png) ![f1-mesh](results/q2/mesh/eval_mesh.png) 
+
+The F1-score curves indicate that the point cloud method performs best, capturing the essential structure of 3D objects with high accuracy probably due to its flexibility to represent complex shapes. Meshes perform second well, offering a continuous surface representation that captures smooth details but may struggle with complex topologies. Voxels, with their grid-like structure, have the lowest F1-scores, as they often miss finer details and complex geometries, limiting their effectiveness in detailed reconstructions.
+
+### Q2.5 Analyse effects of hyperparams variations
+
+In this section, I will provide some ablation studies on the effect of different hyperparameters. Specifically, I will provide studies on voxels, point clouds, and meshes respectively.
+
+#### Voxels
+
+
+#### Point clouds
+For point clouds, I trained three different models with 1000, 5000, and 10000 points. Below are the visualization comparisons of the predictions of these three models.
+
+| **Description** | **1000 points (sample 0)** | **5000 points (sample 0)** | **10000 points (sample 0)** |
+| -------------- | ------------------------ | ------------------------ | ------------------------ |
+| **Input RGB** | ![q2-5-imgp1](results/q2/point_1000/q2_point_rgb_0.png) | ![q2-5-imgp2](results/q2/point_5000/q2_point_rgb_0.png) | ![q2-5-imgp3](results/q2/point_10000/q2_point_rgb_0.png) |
+| **Point cloud prediction** | ![q2-5-predp1](results/q2/point_1000/q2_point_pred_0.gif) | ![q2-5-predp2](results/q2/point_5000/q2_point_pred_0.gif) | ![q2-5-predp3](results/q2/point_10000/q2_point_pred_0.gif) |
+| **Point cloud ground truth** | ![q2-5-gtp1](results/q2/point_1000/q2_point_gt_0.gif) | ![q2-5-gtp2](results/q2/point_5000/q2_point_gt_0.gif) | ![q2-5-gtp3](results/q2/point_10000/q2_point_gt_0.gif) |
+| **Mesh ground truth** | ![q2-5-gtp-mesh1](results/q2/point_1000/q2_mesh_gt_0.gif) | ![q2-5-gtp-mesh2](results/q2/point_5000/q2_mesh_gt_0.gif) | ![q2-5-gtp-mesh3](results/q2/point_10000/q2_mesh_gt_0.gif) |
+| **F1 curves** | ![q2-5-f1p1](results/q2/point_1000/eval_point.png) | ![q2-5-f1p2](results/q2/point_5000/eval_point.png) | ![q2-5-f1p3](results/q2/point_10000/eval_point.png) |
+
+As we can see, the ablation study on point cloud shows that increasing the number of points significantly improves point cloud reconstruction. With 1000 points, the predictions are sparse and lack detail. As the number increases to 5000 and 10000, the reconstructions become more detailed and aligned with the ground truth, as reflected in higher F1 scores. This indicates that a higher point density enhances the model's ability to capture complex geometries. However, I also noticed that the training and evalation time increased as more number of points were used. Therefore, it's crucial to balance accuracy with computational cost, as more points demand greater resources.
