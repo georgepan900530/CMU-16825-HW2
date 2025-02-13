@@ -87,13 +87,7 @@ The F1-score curves indicate that the point cloud method performs best, capturin
 
 ### Q2.5 Analyse effects of hyperparams variations
 
-In this section, I will provide some ablation studies on the effect of different hyperparameters. Specifically, I will provide studies on voxels, point clouds, and meshes respectively.
-
-#### Voxels
-
-
-#### Point clouds
-For point clouds, I trained three different models with 1000, 5000, and 10000 points. Below are the visualization comparisons of the predictions of these three models.
+In this section, I will provide the ablation study on the number of points when fitting to point clouds since it is more intuitive. I trained three different models with 1000, 5000, and 10000 points. Below are the visualization comparisons of the predictions of these three models.
 
 | **Description** | **1000 points (sample 0)** | **5000 points (sample 0)** | **10000 points (sample 0)** |
 | -------------- | ------------------------ | ------------------------ | ------------------------ |
@@ -104,3 +98,5 @@ For point clouds, I trained three different models with 1000, 5000, and 10000 po
 | **F1 curves** | ![q2-5-f1p1](results/q2/point_1000/eval_point.png) | ![q2-5-f1p2](results/q2/point_5000/eval_point.png) | ![q2-5-f1p3](results/q2/point_10000/eval_point.png) |
 
 As we can see, the ablation study on point cloud shows that increasing the number of points significantly improves point cloud reconstruction. With 1000 points, the predictions are sparse and lack detail. As the number increases to 5000 and 10000, the reconstructions become more detailed and aligned with the ground truth, as reflected in higher F1 scores. This indicates that a higher point density enhances the model's ability to capture complex geometries. However, I also noticed that the training and evalation time increased as more number of points were used. Therefore, it's crucial to balance accuracy with computational cost, as more points demand greater resources.
+
+### Q2.6 Intepret the model

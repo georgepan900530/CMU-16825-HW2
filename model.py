@@ -129,6 +129,9 @@ class SingleViewto3D(nn.Module):
         if not args.load_feat:
             vision_model = torchvision_models.__dict__[args.arch](pretrained=True)
             self.encoder = torch.nn.Sequential(*(list(vision_model.children())[:-1]))
+            self.transform = transforms.Compose([
+                transforms.RandomHorizontalFlip(),
+            ])
             self.normalize = transforms.Normalize(
                 mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
             )
@@ -167,7 +170,7 @@ class SingleViewto3D(nn.Module):
         B = images.shape[0]
 
         if not args.load_feat:
-            images_normalize = self.normalize(images.permute(0, 3, 1, 2))
+            images_normalize = self.normalize(self.transform(images.permute(0, 3, 1, 2)))
             encoded_feat = (
                 self.encoder(images_normalize).squeeze(-1).squeeze(-1)
             )  # b x 512
