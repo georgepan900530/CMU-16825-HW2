@@ -66,3 +66,12 @@ In this section, we aim to train a model to predict the coordinates of a point c
 In my opinion, the point cloud reconstruction performed better than that of voxel as we can see a more aligned shapes between the prediction and the ground truth. However, the point clouds are still fairly sparse compared to the ground truth. Therefore, it is reasonable to test different number of points when training point clouds.
 
 ### Q2.3 Image to Mesh
+In this section, we aimed to reconstruct 3D meshes from a single image. The following shows the visualizations of the input image, predicted meshe, and the ground truth mesh.
+
+| **Description** | **Sample 0** | **Sample 150** | **Sample 450** |
+| -------------- | ------------------------ | ------------------------ | ------------------------ |
+| **Input RGB** | ![q2-3-img](results/q2/mesh/q2_mesh_rgb_0.png) | ![q2-3-img2](results/q2/mesh/q2_mesh_rgb_150.png) | ![q2-3-img3](results/q2/mesh/q2_mesh_rgb_450.png) |
+| **Mesh prediction** | ![q2-3-pred](results/q2/mesh/q2_mesh_pred_0.gif) | ![q2-3-pred2](results/q2/mesh/q2_mesh_pred_150.gif) | ![q2-3-pred3](results/q2/mesh/q2_mesh_pred_450.gif) |
+| **Mesh ground truth** | ![q2-3-gt-mesh](results/q2/mesh/q2_mesh_gt_0.gif) | ![q2-3-gt-mesh2](results/q2/mesh/q2_mesh_gt_150.gif) | ![q2-1-gt-mesh3](results/q2/mesh/q2_mesh_gt_450.gif) |
+
+As we can see, the performance of the mesh reconstruction is quite poor where the reconstruction shows different meshes collapsing together. This indicates that reconstruction from a single view might be challenging to the model.
