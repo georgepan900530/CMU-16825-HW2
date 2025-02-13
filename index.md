@@ -43,12 +43,12 @@ In this part, we need to construct a deep learning model to predict the occupanc
 
 #### Visualizations
 
-| **Description**             | **Sample 0**                                           | **Sample202**                                             | **Sample 638**                                            |
+| **Description**             | **Sample 0**                                           | **Sample249**                                             | **Sample 638**                                            |
 | --------------------------- | ------------------------------------------------------ | --------------------------------------------------------- | --------------------------------------------------------- |
-| **Input RGB**               | ![q2-1-img](results/q2/vox_large/q2_vox_rgb_0.png)     | ![q2-1-img2](results/q2/vox_large/q2_vox_rgb_202.png)     | ![q2-1-img3](results/q2/vox_large/q2_vox_rgb_638.png)     |
-| **Voxel grid prediction**   | ![q2-1-pred](results/q2/vox_large/q2_vox_pred_0.gif)   | ![q2-1-pred2](results/q2/vox_large/q2_vox_pred_202.gif)   | ![q2-1-pred3](results/q2/vox_large/q2_vox_pred_638.gif)   |
-| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_large/q2_vox_gt_0.gif)       | ![q2-1-gt2](results/q2/vox_large/q2_vox_gt_202.gif)       | ![q2-1-gt3](results/q2/vox_large/q2_vox_gt_638.gif)       |
-| **Mesh ground truth**       | ![q2-1-gt-mesh](results/q2/vox_large/q2_mesh_gt_0.gif) | ![q2-1-gt-mesh2](results/q2/vox_large/q2_mesh_gt_202.gif) | ![q2-1-gt-mesh3](results/q2/vox_large/q2_mesh_gt_638.gif) |
+| **Input RGB**               | ![q2-1-img](results/q2/vox_final/q2_vox_rgb_0.png)     | ![q2-1-img2](results/q2/vox_final/q2_vox_rgb_249.png)     | ![q2-1-img3](results/q2/vox_final/q2_vox_rgb_638.png)     |
+| **Voxel grid prediction**   | ![q2-1-pred](results/q2/vox_final/q2_vox_pred_0.gif)   | ![q2-1-pred2](results/q2/vox_final/q2_vox_pred_249.gif)   | ![q2-1-pred3](results/q2/vox_final/q2_vox_pred_638.gif)   |
+| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_final/q2_vox_gt_0.gif)       | ![q2-1-gt2](results/q2/vox_final/q2_vox_gt_249.gif)       | ![q2-1-gt3](results/q2/vox_final/q2_vox_gt_638.gif)       |
+| **Mesh ground truth**       | ![q2-1-gt-mesh](results/q2/vox_final/q2_mesh_gt_0.gif) | ![q2-1-gt-mesh2](results/q2/vox_final/q2_mesh_gt_249.gif) | ![q2-1-gt-mesh3](results/q2/vox_final/q2_mesh_gt_638.gif) |
 
 As we can see from the above table, the predictions of voxel grids are not as well as expected. This can also be indentify when observing the training loss (Binar Cross-Entropy Loss) which stucked at around **0.1**. I have tried smaller and larger model. However, the performance of each model are similar.
 
@@ -85,7 +85,7 @@ As we can see, the performance of the mesh reconstruction is quite poor where th
 
 For quantitative comaprison, we can the following three curves of F1 score of voxel, point cloud and mesh. Note that I used the 10000 points curve for the point cloud.
 
-![f1-vox](results/q2/vox_large/eval_vox.png) ![f1-point](results/q2/point_10000/eval_point.png) ![f1-mesh](results/q2/mesh/eval_mesh.png)
+![f1-vox](results/q2/vox_final/eval_vox.png) ![f1-point](results/q2/point_10000/eval_point.png) ![f1-mesh](results/q2/mesh/eval_mesh.png)
 
 The F1-score curves indicate that the point cloud method performs best, capturing the essential structure of 3D objects with high accuracy probably due to its flexibility to represent complex shapes. Meshes perform second well, offering a continuous surface representation that captures smooth details but may struggle with complex topologies. Voxels, with their grid-like structure, have the lowest F1-scores, as they often miss finer details and complex geometries, limiting their effectiveness in detailed reconstructions.
 

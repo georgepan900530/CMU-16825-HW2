@@ -82,14 +82,17 @@ class VoxelDecoder(nn.Module):
         )
         self.layer5 = torch.nn.Sequential(
             torch.nn.ConvTranspose3d(8, 1, kernel_size=1, bias=False),
-            torch.nn.Sigmoid(),
         )
 
     def forward(self, x):
         x = self.fc1(x)
         # resize into a 5D tensor with shape (B, C, D, H, W)
         x = x.view(x.shape[0], 2048, 2, 2, 2)
-        x = self.upsample(x)  # shape: b x 1 x 32 x 32 x 32
+        x = self.layer1(x) # shape: b x 512 x 4 x 4 x 4
+        x = self.layer2(x) # shape: b x 128 x 8 x 8 x 8
+        x = self.layer3(x) # shape: b x 32 x 16 x 16 x 16
+        x = self.layer4(x) # shape: b x 8 x 32 x 32 x 32
+        x = self.layer5(x) # shape: b x 1 x 32 x 32 x 32
         return x
 
 
