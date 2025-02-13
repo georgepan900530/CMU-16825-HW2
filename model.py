@@ -32,8 +32,8 @@ class VoxelDecoder(nn.Module):
 
         # Transpose concolution for spatial decoding
         # Note that the output shape of a single convTranspose3d is (D_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + output_padding + 1
-        self.layer1 = torch.nn.Sequential(
-            torch.nn.ConvTranspose3d(
+        self.layer1 = nn.Sequential(
+            nn.ConvTranspose3d(
                 2048,
                 512,
                 kernel_size=4,
@@ -41,11 +41,11 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            torch.nn.BatchNorm3d(512),
-            torch.nn.ReLU(),
+            nn.BatchNorm3d(512),
+            nn.ReLU(),
         )
-        self.layer2 = torch.nn.Sequential(
-            torch.nn.ConvTranspose3d(
+        self.layer2 = nn.Sequential(
+            nn.ConvTranspose3d(
                 512,
                 128,
                 kernel_size=4,
@@ -53,11 +53,11 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            torch.nn.BatchNorm3d(128),
-            torch.nn.ReLU(),
+            nn.BatchNorm3d(128),
+            nn.ReLU(),
         )
-        self.layer3 = torch.nn.Sequential(
-            torch.nn.ConvTranspose3d(
+        self.layer3 = nn.Sequential(
+            nn.ConvTranspose3d(
                 128,
                 32,
                 kernel_size=4,
@@ -65,11 +65,11 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            torch.nn.BatchNorm3d(32),
-            torch.nn.ReLU(),
+            nn.BatchNorm3d(32),
+            nn.ReLU(),
         )
-        self.layer4 = torch.nn.Sequential(
-            torch.nn.ConvTranspose3d(
+        self.layer4 = nn.Sequential(
+            nn.ConvTranspose3d(
                 32,
                 8,
                 kernel_size=4,
@@ -77,23 +77,27 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            torch.nn.BatchNorm3d(8),
-            torch.nn.ReLU(),
+            nn.BatchNorm3d(8),
+            nn.ReLU(),
         )
-        self.layer5 = torch.nn.Sequential(
-            torch.nn.ConvTranspose3d(8, 1, kernel_size=1, bias=False),
+        self.layer5 = nn.Sequential(
+            nn.ConvTranspose3d(8, 1, kernel_size=1, bias=False),
         )
 
     def forward(self, x):
         x = self.fc1(x)
         # resize into a 5D tensor with shape (B, C, D, H, W)
         x = x.view(x.shape[0], 2048, 2, 2, 2)
-        x = self.layer1(x) # shape: b x 512 x 4 x 4 x 4
-        x = self.layer2(x) # shape: b x 128 x 8 x 8 x 8
-        x = self.layer3(x) # shape: b x 32 x 16 x 16 x 16
-        x = self.layer4(x) # shape: b x 8 x 32 x 32 x 32
-        x = self.layer5(x) # shape: b x 1 x 32 x 32 x 32
-        return x
+        x = self.layer1(x)  # shape: b x 512 x 4 x 4 x 4
+        feat1 = x.mean(dim=1)
+        x = self.layer2(x)  # shape: b x 128 x 8 x 8 x 8
+        feat2 = x.mean(dim=1)
+        x = self.layer3(x)  # shape: b x 32 x 16 x 16 x 16
+        feat3 = x.mean(dim=1)
+        x = self.layer4(x)  # shape: b x 8 x 32 x 32 x 32
+        feat4 = x.mean(dim=1)
+        x = self.layer5(x)  # shape: b x 1 x 32 x 32 x 32
+        return x, feat1, feat2, feat3, feat4
 
 
 class PointDecoder(nn.Module):
