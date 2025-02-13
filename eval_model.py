@@ -189,7 +189,7 @@ def evaluate_model(args):
 
         read_time = time.time() - read_start_time
 
-        predictions, feat1, feat2, feat3, feat4 = model(images_gt, args)
+        predictions = model(images_gt, args)
 
         if args.type == "vox":
             predictions = predictions.permute(0, 1, 4, 3, 2)
@@ -211,14 +211,14 @@ def evaluate_model(args):
                     # Visualize predicted voxels
                     voxels_pred = predictions[0]
                     vis_voxel(
-                        voxels_pred, f"results/q2/vox_final/q2_vox_pred_{step}.gif"
+                        voxels_pred, f"results/q2/vox_inter/q2_vox_pred_{step}.gif"
                     )
 
                     # Visualize intermediate features
-                    vis_voxel(feat1, f"results/q2/vox_final/q2_vox_feat1_{step}.gif")
-                    vis_voxel(feat2, f"results/q2/vox_final/q2_vox_feat2_{step}.gif")
-                    vis_voxel(feat3, f"results/q2/vox_final/q2_vox_feat3_{step}.gif")
-                    vis_voxel(feat4, f"results/q2/vox_final/q2_vox_feat4_{step}.gif")
+                    # vis_voxel(feat1, f"results/q2/vox_inter/q2_vox_feat1_{step}.gif")
+                    # vis_voxel(feat2, f"results/q2/vox_inter/q2_vox_feat2_{step}.gif")
+                    # vis_voxel(feat3, f"results/q2/vox_inter/q2_vox_feat3_{step}.gif")
+                    # vis_voxel(feat4, f"results/q2/vox_inter/q2_vox_feat4_{step}.gif")
 
                     # Visualize ground truth voxels
                     voxels_gt = feed_dict["voxels"].to(args.device)

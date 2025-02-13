@@ -97,7 +97,7 @@ class VoxelDecoder(nn.Module):
         x = self.layer4(x)  # shape: b x 8 x 32 x 32 x 32
         feat4 = x.mean(dim=1)
         x = self.layer5(x)  # shape: b x 1 x 32 x 32 x 32
-        return x, feat1, feat2, feat3, feat4
+        return x
 
 
 class PointDecoder(nn.Module):
