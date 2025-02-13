@@ -32,20 +32,57 @@ class VoxelDecoder(nn.Module):
 
         # Transpose concolution for spatial decoding
         # Note that the output shape of a single convTranspose3d is (D_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + output_padding + 1
-        self.upsample = nn.Sequential(
-            nn.ConvTranspose3d(2048, 512, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm3d(512),
-            nn.ReLU(),
-            nn.ConvTranspose3d(512, 128, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm3d(128),
-            nn.ReLU(),
-            nn.ConvTranspose3d(128, 32, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm3d(32),
-            nn.ReLU(),
-            nn.ConvTranspose3d(32, 8, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm3d(8),
-            nn.ReLU(),
-            nn.ConvTranspose3d(8, 1, kernel_size=1),
+        self.layer1 = torch.nn.Sequential(
+            torch.nn.ConvTranspose3d(
+                2048,
+                512,
+                kernel_size=4,
+                stride=2,
+                bias=False,
+                padding=1,
+            ),
+            torch.nn.BatchNorm3d(512),
+            torch.nn.ReLU(),
+        )
+        self.layer2 = torch.nn.Sequential(
+            torch.nn.ConvTranspose3d(
+                512,
+                128,
+                kernel_size=4,
+                stride=2,
+                bias=False,
+                padding=1,
+            ),
+            torch.nn.BatchNorm3d(128),
+            torch.nn.ReLU(),
+        )
+        self.layer3 = torch.nn.Sequential(
+            torch.nn.ConvTranspose3d(
+                128,
+                32,
+                kernel_size=4,
+                stride=2,
+                bias=False,
+                padding=1,
+            ),
+            torch.nn.BatchNorm3d(32),
+            torch.nn.ReLU(),
+        )
+        self.layer4 = torch.nn.Sequential(
+            torch.nn.ConvTranspose3d(
+                32,
+                8,
+                kernel_size=4,
+                stride=2,
+                bias=False,
+                padding=1,
+            ),
+            torch.nn.BatchNorm3d(8),
+            torch.nn.ReLU(),
+        )
+        self.layer5 = torch.nn.Sequential(
+            torch.nn.ConvTranspose3d(8, 1, kernel_size=1, bias=False),
+            torch.nn.Sigmoid(),
         )
 
     def forward(self, x):
@@ -104,6 +141,7 @@ class MeshDecoder(nn.Module):
         out: b x mesh_pred.verts_packed().shape[0] x 3
 
     """
+
     def __init__(self, mesh_shape, in_dim=512):
         super(MeshDecoder, self).__init__()
         self.mesh_shape = mesh_shape
@@ -129,9 +167,11 @@ class SingleViewto3D(nn.Module):
         if not args.load_feat:
             vision_model = torchvision_models.__dict__[args.arch](pretrained=True)
             self.encoder = torch.nn.Sequential(*(list(vision_model.children())[:-1]))
-            self.transform = transforms.Compose([
-                transforms.RandomHorizontalFlip(),
-            ])
+            self.transform = transforms.Compose(
+                [
+                    transforms.RandomHorizontalFlip(),
+                ]
+            )
             self.normalize = transforms.Normalize(
                 mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
             )
@@ -170,7 +210,9 @@ class SingleViewto3D(nn.Module):
         B = images.shape[0]
 
         if not args.load_feat:
-            images_normalize = self.normalize(self.transform(images.permute(0, 3, 1, 2)))
+            images_normalize = self.normalize(
+                self.transform(images.permute(0, 3, 1, 2))
+            )
             encoded_feat = (
                 self.encoder(images_normalize).squeeze(-1).squeeze(-1)
             )  # b x 512
