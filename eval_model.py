@@ -171,7 +171,7 @@ def evaluate_model(args):
     avg_r_score = []
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"checkpoints/q3_3/checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"checkpoints/q2_1/checkpoint_{args.type}.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         print(f"Succesfully loaded iter {start_iter}")
 
@@ -204,14 +204,14 @@ def evaluate_model(args):
             if args.type == "vox":
                 # Need to visualize 4 examples, including their imput RGB images, predicted voxels, , ground truth voxels, and ground truth meshes
                 # Visualize RGB image
-                if f1_05 > 50:
+                if f1_05 > 0:
                     rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
-                    plt.imsave(f"results/q2/vox_final/q2_vox_rgb_{step}.png", rend)
+                    plt.imsave(f"results/q2/vox_linear/q2_vox_rgb_{step}.png", rend)
 
                     # Visualize predicted voxels
                     voxels_pred = predictions[0]
                     vis_voxel(
-                        voxels_pred, f"results/q2/vox_inter/q2_vox_pred_{step}.gif"
+                        voxels_pred, f"results/q2/vox_linear/q2_vox_pred_{step}.gif"
                     )
 
                     # Visualize intermediate features
@@ -223,11 +223,11 @@ def evaluate_model(args):
                     # Visualize ground truth voxels
                     voxels_gt = feed_dict["voxels"].to(args.device)
                     voxels_gt = voxels_gt[0]
-                    vis_voxel(voxels_gt, f"results/q2/vox_final/q2_vox_gt_{step}.gif")
+                    vis_voxel(voxels_gt, f"results/q2/vox_linear/q2_vox_gt_{step}.gif")
 
                     # Visualize ground truth mesh
                     mesh_gt = mesh_gt[0]
-                    vis_mesh(mesh_gt, f"results/q2/vox_final/q2_mesh_gt_{step}.gif")
+                    vis_mesh(mesh_gt, f"results/q2/vox_linear/q2_mesh_gt_{step}.gif")
 
             elif args.type == "point":
                 rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
@@ -240,7 +240,7 @@ def evaluate_model(args):
                     predictions, f"results/q3/q3_point_pred_{step}_chair.gif"
                 )
                 mesh_gt = mesh_gt[0]
-                # vis_mesh(mesh_gt, f"results/q3/q3_mesh_gt_{step}.gif")
+                vis_mesh(mesh_gt, f"results/q3/q3_mesh_gt_{step}.gif")
 
             elif args.type == "mesh":
                 rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)

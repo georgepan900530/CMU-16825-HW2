@@ -31,7 +31,7 @@ def chamfer_loss(point_cloud_src, point_cloud_tgt):
     knn_tgt_dist = knn_tgt.dists[..., 0]  # (b, n_points)
 
     # Compute the loss
-    loss_chamfer = knn_src_dist.mean(dim=1) + knn_tgt_dist.mean(dim=1)
+    loss_chamfer = knn_src_dist.sum(dim=1) + knn_tgt_dist.sum(dim=1)
     loss_chamfer = loss_chamfer.mean()  # mean over batch
     return loss_chamfer
 
