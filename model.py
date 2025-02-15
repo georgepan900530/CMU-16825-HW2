@@ -41,7 +41,7 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            nn.BatchNorm3d(512),
+            # nn.BatchNorm3d(512),
             nn.ReLU(),
         )
         self.layer2 = nn.Sequential(
@@ -53,7 +53,7 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            nn.BatchNorm3d(128),
+            # nn.BatchNorm3d(128),
             nn.ReLU(),
         )
         self.layer3 = nn.Sequential(
@@ -65,7 +65,7 @@ class VoxelDecoder(nn.Module):
                 bias=False,
                 padding=1,
             ),
-            nn.BatchNorm3d(32),
+            # nn.BatchNorm3d(32),
             nn.ReLU(),
         )
         self.layer4 = nn.Sequential(

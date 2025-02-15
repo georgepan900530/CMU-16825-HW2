@@ -112,3 +112,19 @@ For this section, I am interested in what the voxel model learned after training
 | **Visualizations**           | ![q2-6-feat1](results/q2/vox_inter/q2_vox_feat1_0.gif)   | ![q2-6-feat2](results/q2/vox_inter/q2_vox_feat2_0.gif)   | ![q2-6-feat3](results/q2/vox_inter/q2_vox_feat3_0.gif)   | ![q2-6-feat4](results/q2/vox_inter/q2_vox_feat4_0.gif)   | ![q2-6-pred](results/q2/vox_inter/q2_vox_pred_0.gif)   |
 
 The visualization of the intermediate features from the voxel model reveals a progressive refinement of the 3D structure as it passes through each layer. Initially, the model captures broad, abstract shapes, similar to how 2D convolutional networks identify edges and simple patterns in early layers. As the layers deepen, the features become more detailed and structured, indicating the model's ability to learn complex spatial hierarchies. Interestingly, the fourth feature appears quite odd, as it is just a cube, which might suggest an anomaly or a unique aspect of the model's learning process at that stage. By the final layer, the model successfully reconstructs a coherent 3D shape, demonstrating its capacity to integrate and refine information across multiple layers. This process mirrors the hierarchical feature extraction seen in 2D convolutional networks, where deeper layers capture more intricate and specific details.
+
+## Q3.3 Extended dataset for training
+For this section, I used the full dataset to train the point cloud (10000 points). Below are the comparisons of the newly trained model and the original model that were trained on the single-class dataset.
+
+### Visualizations
+| **Samples**           | **Trained on the single-class dataset**                       | **Trained on the full dataset**                      | **Ground Truth Point cloud**                                     |
+| --------------------  | -----------------------------------------------------------   | ---------------------------------------------------- | ---------------------------------------------------------------- |
+| **Sample 0 (Chair)** | ![q3-sample50_o](results/q2/point_10000/q2_point_pred_0.gif) | ![q3-sample50_n](results/q3/q3_point_pred_0_chair.gif)    | ![q3-sample50_ogt](results/q2/point_10000/q2_point_gt_0.gif)    |
+| **Sample 50 (Plane)** | ![q3-sample50_o-plane](results/q3_single/q3_point_pred_50.gif) | ![q3-sample50_n-plane](results/q3/q3_point_pred_50.gif)    | ![q3-sample50_ogt-plane](results/q3/q3_point_gt_50.gif)    |
+| **Sample 450 (Car)** | ![q3-sample50_o-car](results/q3_single/q3_point_pred_450.gif) | ![q3-sample50_n-car](results/q3/q3_point_pred_450.gif)    | ![q3-sample50_ogt-car](results/q3/q3_point_gt_450.gif)   |
+
+### Quantitative Comparison on Chair
+
+![q3_old](results/q3_single/eval_point.png) ![q3_new](results/q3/eval_point.png)
+
+The visualization of the point cloud model's performance reveals significant improvements when trained on the full dataset compared to the single-class dataset (chair). Visualizations show that models trained on the full dataset produce more detailed and accurate reconstructions across different object categories, such as planes and cars, indicating better generalization. The quantitative comparison of F1-scores for the chair class further supports this, as the model trained on the full dataset achieves higher scores across thresholds. This suggests that exposure to a diverse range of objects enhances the model's ability to capture complex geometries and improves its overall robustness and accuracy.

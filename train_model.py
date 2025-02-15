@@ -28,7 +28,7 @@ def get_args_parser():
     parser.add_argument("--n_points", default=1000, type=int)
     parser.add_argument("--w_chamfer", default=1.0, type=float)
     parser.add_argument("--w_smooth", default=0.1, type=float)
-    parser.add_argument("--save_freq", default=200, type=int)
+    parser.add_argument("--save_freq", default=20, type=int)
     parser.add_argument("--load_checkpoint", action="store_true")
     parser.add_argument("--device", default="cuda", type=str)
     parser.add_argument("--load_feat", action="store_true")
@@ -100,7 +100,7 @@ def train_model(args):
     start_time = time.time()
 
     if args.load_checkpoint:
-        checkpoint = torch.load(f"./checkpoints/q2_1/checkpoint_{args.type}.pth")
+        checkpoint = torch.load(f"./checkpoints/q3_3/checkpoint_{args.type}.pth")
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_iter = checkpoint["step"]
@@ -141,7 +141,7 @@ def train_model(args):
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                 },
-                f"./checkpoints/q2_1/checkpoint_{args.type}.pth",
+                f"./checkpoints/q3_3/checkpoint_{args.type}.pth",
             )
 
         print(
