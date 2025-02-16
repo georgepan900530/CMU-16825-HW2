@@ -99,7 +99,7 @@ def DegreeRenders(
 def vis_voxel(
     voxel,
     output_file,
-    threshold=0.5,
+    threshold=0.25,
     image_size=256,
     distance=3,
     fps=15,
