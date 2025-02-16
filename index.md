@@ -43,12 +43,12 @@ In this part, we need to construct a deep learning model to predict the occupanc
 
 #### Visualizations
 
-| **Description**             | **Sample 0**                                           | **Sample249**                                             | **Sample 638**                                            |
+| **Description**             | **Sample 0**                                           | **Sample110**                                             | **Sample 250**                                            |
 | --------------------------- | ------------------------------------------------------ | --------------------------------------------------------- | --------------------------------------------------------- |
-| **Input RGB**               | ![q2-1-img](results/q2/vox_final/q2_vox_rgb_0.png)     | ![q2-1-img2](results/q2/vox_final/q2_vox_rgb_249.png)     | ![q2-1-img3](results/q2/vox_final/q2_vox_rgb_638.png)     |
-| **Voxel grid prediction**   | ![q2-1-pred](results/q2/vox_final/q2_vox_pred_0.gif)   | ![q2-1-pred2](results/q2/vox_final/q2_vox_pred_249.gif)   | ![q2-1-pred3](results/q2/vox_final/q2_vox_pred_638.gif)   |
-| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_final/q2_vox_gt_0.gif)       | ![q2-1-gt2](results/q2/vox_final/q2_vox_gt_249.gif)       | ![q2-1-gt3](results/q2/vox_final/q2_vox_gt_638.gif)       |
-| **Mesh ground truth**       | ![q2-1-gt-mesh](results/q2/vox_final/q2_mesh_gt_0.gif) | ![q2-1-gt-mesh2](results/q2/vox_final/q2_mesh_gt_249.gif) | ![q2-1-gt-mesh3](results/q2/vox_final/q2_mesh_gt_638.gif) |
+| **Input RGB**               | ![q2-1-img](results/q2/vox_test/q2_vox_rgb_0.png)     | ![q2-1-img2](results/q2/vox_test/q2_vox_rgb_110.png)     | ![q2-1-img3](results/q2/vox_test/q2_vox_rgb_250.png)     |
+| **Voxel grid prediction**   | ![q2-1-pred](results/q2/vox_test/q2_vox_pred_0.gif)   | ![q2-1-pred2](results/q2/vox_test/q2_vox_pred_110.gif)   | ![q2-1-pred3](results/q2/vox_test/q2_vox_pred_250.gif)   |
+| **Voxel grid ground truth** | ![q2-1-gt](results/q2/vox_test/q2_vox_gt_0.gif)       | ![q2-1-gt2](results/q2/vox_test/q2_vox_gt_110.gif)       | ![q2-1-gt3](results/q2/vox_test/q2_vox_gt_250.gif)       |
+| **Mesh ground truth**       | ![q2-1-gt-mesh](results/q2/vox_test/q2_mesh_gt_0.gif) | ![q2-1-gt-mesh2](results/q2/vox_test/q2_mesh_gt_110.gif) | ![q2-1-gt-mesh3](results/q2/vox_test/q2_mesh_gt_250.gif) |
 
 As we can see from the above table, the predictions of voxel grids are not as well as expected. This can also be indentify when observing the training loss (Binar Cross-Entropy Loss) which stucked at around **0.1**. I have tried smaller and larger model. However, the performance of each model are similar.
 
